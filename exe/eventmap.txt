@@ -1,0 +1,123 @@
+# Event ID Mapping file
+#
+# ref: http://support.microsoft.com/kb/2157973
+#      http://support.microsoft.com/kb/977519
+Microsoft-Windows-Security-Auditing/4625:[Failed Login]
+#
+# ref: http://technet.microsoft.com/en-us/library/ee891289(v=ws.10).aspx
+# ref: http://technet.microsoft.com/en-us/library/ee891242(v=ws.10)
+Microsoft-Windows-TerminalServices-LocalSessionManager/21:[Session Logon]
+Microsoft-Windows-TerminalServices-LocalSessionManager/23:[Session Logoff]
+Microsoft-Windows-TerminalServices-LocalSessionManager/24:[Session Disconnect]
+Microsoft-Windows-TerminalServices-LocalSessionManager/1101:[Logon]
+Microsoft-Windows-TerminalServices-LocalSessionManager/1103:[Logoff]
+Microsoft-Windows-TerminalServices-LocalSessionManager/25:[Session Reconnect]
+Microsoft-Windows-TerminalServices-LocalSessionManager/1105:[Reconnect]
+Microsoft-Windows-TerminalServices-LocalSessionManager/22:[Shell Start]
+Microsoft-Windows-TerminalServices-LocalSessionManager/1102:[Shell Start]
+
+Microsoft-Windows-Winlogon/7001:[Logon]
+Microsoft-Windows-Winlogon/7002:[Logoff]
+Winlogon/4101:[License Val.]
+
+Microsoft-Windows-Security-Auditing/4624:[Logon]
+
+# http://technet.microsoft.com/en-us/library/dd315533(v=ws.10).aspx
+Microsoft-Windows-TaskScheduler/102:[Job Success]
+Microsoft-Windows-TaskScheduler/106:[Task Reg]
+Microsoft-Windows-TaskScheduler/201:[Action Success]
+
+Microsoft-Windows-DNS-Client/1014:[Name Resolution Timeout]
+#
+# Source: Microsoft-Windows-TerminalServices-RemoteConnectionManager
+# ref: http://technet.microsoft.com/en-us/library/cc775119(v=ws.10)
+Microsoft-Windows-TerminalServices-RemoteConnectionManager/1146:[Session Start]
+Microsoft-Windows-TerminalServices-RemoteConnectionManager/1147:[Logon]
+Microsoft-Windows-TerminalServices-RemoteConnectionManager/1149:[Logon]
+
+VSS/8224:[VSS Shutdown]
+
+# 
+# Source: microsoft-windows-user profiles service
+# Event ID: 1530
+# ref: http://support.microsoft.com/kb/947238
+#
+# Source: microsoft-windows-user profiles service
+# Event ID: 1511,1534
+# ref: http://support.microsoft.com/kb/940453
+Microsoft-Windows-User Profiles Service/2:[Logon]
+Microsoft-Windows-User Profiles Service/4:[Logoff]
+Microsoft-Windows-Kernel-General/1:[Time change]
+Microsoft-Windows-Kernel-General/13:[Shutdown]
+Microsoft-Windows-Kernel-General/12:[System Start]
+Microsoft-Windows-Kernel-Power/42:[System Sleep]
+
+TermService/1012:[# Failed Logons]
+TermDD/50:[RDP Prot Error]
+
+EventLog/6005:[System Start]
+EventLog/6009:[System Start]
+EventLog/6006:[Shutdown]
+USER32/1074:[Shutdown]
+EventLog/6013:[Uptime]
+UserPNP/2001:[Service/Device added]
+UserPNP/2003:[Service/Device added]
+DriverFrameworks-UserMode/10000:[Driver Installed]
+#
+#ref: http://technet.microsoft.com/en-us/library/dd380071(v=ws.10).aspx
+WLAN-AutoConfig/8000:[WAP Connection]
+WLAN-AutoConfig/8001:[WAP Connection]
+WLAN-AutoConfig/8002:[WAP Connect Fail]
+NetworkProfile/1000:[Connected to Network]
+NetworkProfile/1001:[Disconnected from Network]
+VHDMP/1:[VHD Mount]
+VHDMP/2:[VHD Unmount]
+Virtual PC/1002:[App Launch]
+Virtual PC/80:[XPMode Started]
+Microsoft-Windows-Application-Experience/905:[Program Updated]
+Microsoft-Windows-Application-Experience/903:[Program Installed]
+Microsoft-Windows-Application-Experience/904:[Program Installed]
+Microsoft-Windows-Application-Experience/907:[Program Removed]
+Microsoft-Windows-Application-Experience/908:[Program Removed]
+DriverFrameworks-UserMode/2003:[Connected Device]
+DriverFrameworks-UserMode/2004:[Connected Device]
+DateTimeControlPanel/2000:[System Time Set]
+
+# ref: http://technet.microsoft.com/en-us/library/cc735584(v=ws.10).aspx
+MsiInstaller/11724:[App Removal]
+MsiInstaller/11707:[Product Install]
+MsiInstaller/1033:[Product Install]
+MsiInstaller/1034:[Product Removed]
+
+#
+# Other References:
+#  http://support.microsoft.com/kb/947226
+#
+# Source: Microsoft-Windows-RestartManager
+# http://technet.microsoft.com/en-us/library/cc774719(v=ws.10)
+#
+# Events and Errors
+# http://technet.microsoft.com/en-us/library/cc754424(v=ws.10)
+#
+# Win7/Win2008 R2 Security Audit Events
+# http://www.microsoft.com/en-us/download/details.aspx?id=21561
+#
+# Source: Microsoft-Windows-TerminalServices-PnPDevices
+# Event ID: 32-37
+# http://technet.microsoft.com/en-us/library/cc775185(v=ws.10)
+#
+# Source: Microsoft-Windows-TerminalServices-RemoteConnectionManager
+# http://technet.microsoft.com/en-us/library/cc775119(v=ws.10)
+#
+# Source: USER32
+# Event ID: 1074
+# http://www.microsoft.com/technet/support/ee/transform.aspx?ProdName=
+#  Windows+Operating+System&ProdVer=5.2&EvtID=1074&EvtSrc=User32&LCID=1033
+#
+# Source: TermServ
+# Event ID: 1012
+# Session disconnect due to # failed logon attempts
+# http://technet.microsoft.com/en-us/library/cc775156(v=ws.10).aspx
+#
+# Microsoft-Windows-GroupPolicy
+# http://technet.microsoft.com/en-us/library/cc749336(v=ws.10).aspx
