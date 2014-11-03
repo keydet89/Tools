@@ -1,84 +1,58 @@
-#! c:\perl\bin\perl.exe
-#------------------------------------------------------------
-# evtxparse.pl - Script to parse Windows Event Logs into TLN output format
+#! C:\perl\bin\perl.exe
+#-----------------------------------------------------------
+# Parse the output of the following LogParser command:
 #
-# To use, first run the following command:
-# logparser -i:evt -o:csv "Select RecordNumber,TO_UTCTIME(TimeGenerated),EventID,
-#   SourceName,ComputerName,SID,Strings from <path\*.evtx>" > output.txt
+# logparser -i:evt -o:csv "SELECT RecordNumber, TO_UTCTIME(TimeGenerated),
+#   EventID,SourceName,Strings from System" > system.csv
 #
-# Then run this script against the output to parse into TLN output, and add to an
-# events file.
+# History:
+#   20141103 - updated to parse LogParser output lines with multiple 
+#              carriage returns
 #
-# evtxparse.pl output.txt >> events.txt
 #
-# copyright 2012 Quantum Analytics Research, LLC
+# copyright 2014 QAR, LLC
 # Author: H. Carvey, keydet89@yahoo.com
-#------------------------------------------------------------
+#-----------------------------------------------------------
 use strict;
 use Time::Local;
 
-my $file = shift || usage();
-die "File not found.\n" unless (-e $file && -f $file);
-
-my %ids;
-my $mapfile = "eventmap\.txt";
-if (-e $mapfile) {
-	%ids = eventMap($mapfile);
-}
+my $file = "F:\\dc\\evtx\\app_evtx\.txt";
+my @lines = ();
+my $l = "";
 
 open(FH,"<",$file) || die "Could not open $file: $!\n";
-while (<FH>) {
+while(<FH>) {
 	chomp;
-	next unless ($_ =~ m/^\d+,/);
-	my ($num,$gen,$id,$source,$compname,$sid,$str) = split(/,/,$_,7);
-	$str =~ s/\|/,/g;
-	$sid = "" if ($sid eq "");
-	my $t2 = parseTime($gen);
-	my $descr = $source."/".$id." - ".$str;
-	if (exists $ids{$source."/".$id}) {
-		$descr = $ids{$source."/".$id}." ".$descr;
+	if ($_ =~ m/^\d+\,\d+/) {
+		$l = join('|',@lines);
+		processLogLine($l);
+		@lines = ();
+		push(@lines,$_);
 	}
-	
-	print $t2."|EVTX|".$compname."|".$sid."|".$descr."\n";
+	else {		
+		push(@lines,$_);
+	}
 }
 close(FH);
 
-sub parseTime {
-# 2011-08-26 07:58:46
-	my $t = shift;
-	my ($date,$time) = split(/\s/,$t,2);
-	my($yr,$mon,$day) = split(/-/,$date,3);
-	$mon =~ s/^0//;
-	my($hr,$min,$sec) = split(/:/,$time,3);
-	return timegm($sec,$min,$hr,$day,($mon - 1),$yr);
-}
-
-sub usage {
-	print "To use this script, first run the following LogParser command:\n";
-	print "\n";
-	print "logparser -i:evt -o:csv \"Select RecordNumber,TimeGenerated,EventID,".
-	      "SourceName,ComputerName,SID,Strings from <path\\*.evtx>\" > output\.txt\n";
-	print "\n";
-	print "Then add the events to the TLN events file by running:\n";
-	print "\n";
-	print "evtxparse output\.txt >> events\.txt\n";
-	print "\n";
-	print "copyright 2012 Quantum Analytics Research, LLC\n";
-	print "Author: H. Carvey, keydet89\@yahoo\.com";
-	print "\n";
-	exit -1;
-}
-
-sub eventMap {
-	my $file = shift;
-	my %events;
-	open(FH,"<",$file) || die "Could not open $file: $!\n";
-	while(<FH>) {
-		next if ($_ =~ m/^#/ || $_ =~ m/^\s+/);
-		chomp;
-		my ($id,$msg) = split(/:/,$_,2);
-		$events{$id} = $msg;
+sub processLogLine {
+	my @data = shift;
+	my $line = "";
+	
+	if (scalar(@data) >= 1 && $data[0] =~ m/^\d+,\d+/) {
+		$line = join('|',@data);
+		my ($num,$date,$id,$source,$strings) = split(/,/,$line,5);
+		my $epoch = getEpoch($date);		
+		print $epoch."|EVTX|Server||".$source."/".$id.";".$strings."\n";
 	}
-	close(FH);
-	return %events;
+}
+
+sub getEpoch($) {
+	my $date = shift;
+	my($d,$t) = split(/\s/,$date,2);
+	my($hr,$min,$sec) = split(/:/,$t,3);
+	my($year,$mon,$mday) = split(/-/,$d,3);
+	
+	my $epoch = timegm($sec,$min,$hr,$mday,($mon - 1),$year);
+	return $epoch;
 }
