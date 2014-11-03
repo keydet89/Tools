@@ -16,7 +16,8 @@
 use strict;
 use Time::Local;
 
-my $file = "F:\\dc\\evtx\\app_evtx\.txt";
+my $file = shift || die "You must enter a file name.\n";
+
 my @lines = ();
 my $l = "";
 
