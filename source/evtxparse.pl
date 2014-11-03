@@ -3,7 +3,7 @@
 # Parse the output of the following LogParser command:
 #
 # logparser -i:evt -o:csv "SELECT RecordNumber, TO_UTCTIME(TimeGenerated),
-#   EventID,SourceName,Strings from System" > system.csv
+#   EventID,SourceName,Strings from System" > system.txt
 #
 # History:
 #   20141103 - updated to parse LogParser output lines with multiple 
@@ -17,6 +17,22 @@ use strict;
 use Time::Local;
 
 my $file = shift || die "You must enter a file name.\n";
+
+#Read in eventmap.txt file
+my %evts = ();
+my ($tag1,$prec);
+my $mapfile = "eventmap\.txt";
+if (-e $mapfile) {
+	open(FH,"<",$mapfile);
+	while(<FH>) {
+		chomp;
+# skip comments/blank lines
+		next if ($_ =~ m/^#/ || $_ =~ /^\s*$/);
+		($tag1,$prec) = split(/:/,$_,2);
+		$evts{$tag1} = $prec;
+	}
+	close(FH);
+}
 
 my @lines = ();
 my $l = "";
@@ -44,7 +60,15 @@ sub processLogLine {
 		$line = join('|',@data);
 		my ($num,$date,$id,$source,$strings) = split(/,/,$line,5);
 		my $epoch = getEpoch($date);		
-		print $epoch."|EVTX|Server||".$source."/".$id.";".$strings."\n";
+		$strings =~ s/\|/,/g;
+		my $descr;
+		if (exists $evts{$source."/".$id}) {
+			$descr = $evts{$source."/".$id}." ".$source."/".$id.";".$strings;
+		}
+		else {
+			$descr = $source."/".$id.";".$strings;
+		}
+		print $epoch."|EVTX|Server||".$descr."\n";
 	}
 }
 

@@ -27,7 +27,17 @@ Microsoft-Windows-TaskScheduler/102:[Job Success]
 Microsoft-Windows-TaskScheduler/106:[Task Reg]
 Microsoft-Windows-TaskScheduler/201:[Action Success]
 
+# Malware Detection
 Microsoft-Windows-DNS-Client/1014:[Name Resolution Timeout]
+Microsoft Antimalware/1116:[MalDetect]
+Microsoft-Windows-Windows Defender/3004:[MalDetect]
+Symantec Endpoint Protection Client/51:[MalDetect]
+Symantec AntiVirus/51:[MalDetect]
+McLogEvent/257:[MalDetect]
+
+#Lateral Movement
+Microsoft-Windows-TaskScheduler/106:[Task Reg]
+
 #
 # Source: Microsoft-Windows-TerminalServices-RemoteConnectionManager
 # ref: http://technet.microsoft.com/en-us/library/cc775119(v=ws.10)
