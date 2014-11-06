@@ -33,6 +33,7 @@ Microsoft Antimalware/1116:[MalDetect]
 Microsoft-Windows-Windows Defender/3004:[MalDetect]
 Symantec Endpoint Protection Client/51:[MalDetect]
 Symantec AntiVirus/51:[MalDetect]
+Symantec Network Protection/400:[MalDetect]
 McLogEvent/257:[MalDetect]
 
 #Lateral Movement

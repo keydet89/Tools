@@ -1,0 +1,147 @@
+Catalog of tools 
+
+Note: For .exe files, usage syntax is available by simply typing the name
+of the file at the command prompt.  For example, to see the usage for idx.exe
+simply type the name of the file (i.e., "idx") at the command prompt to see 
+the usage syntax:
+
+C:\tools>idx
+idx v.20130212 [option]
+Parse Java deployment cache *.idx files
+
+  -f file........Path to a file
+  -d dir.........Directory (see example below)
+  -c ............CSV output (includes heuristics)
+  -t ............TLN output (includes heuristics)
+  -s server......Use with -t
+  -u user........Use with -t
+  -h ............Help (print this information)
+
+Ex: C:\>idx -f file.idx
+    C:\>idx -d c:\users\user\appdata\locallow\sun\java\deployment\cache\6.0
+
+**All times printed as GMT/UTC
+
+copyright 2013 Quantum Analytics Research, LLC
+
+
+When in doubt about a tool or it's output, read the syntax info, the source,
+or contact me (keydet89 at yahoo dot com)
+------------------------------------------------------------
+bodyfile.exe
+Convert output of TSK fls.exe from bodyfile format to TLN event file format
+(see WFA 4/e, ch7)
+
+destlist.exe
+Parse AutoDest Jump List DestList streams into table or TLN format
+
+evtparse.exe
+Parse XP/2003 *.evt files.
+
+evtxparse.exe
+Assist in parsing Vista+ *.evtx files; evtxparse takes the output of a 
+specific LogParser command line and parses it into TLN format. It also 
+utilizes eventmap.txt to perform event mapping.  
+
+ftkparse.exe
+Parse the output of FTK Imager's "Export Directory Listing..." to TLN events 
+file format
+
+idx.exe
+Parses Java deployment cache index/*.idx files
+
+jl.exe
+Parse AutoDest Jump List files
+*Note: Very Beta
+
+lnk.exe
+Parse Windows shortcut/LNK files
+
+LogParser.exe
+MS's LogParser tool, available from:
+http://technet.microsoft.com/en-us/scriptcenter/dd919274.aspx
+
+Target artifacts: in this case, LogParser is used in wevtx.bat; as such,
+the target artifacts are Windows Event Log/*.evtx files
+
+parse.exe
+Parse a TLN events file into a timeline/TLN file; for details of this
+file's use in the process of creating a timeline, see ch7 of WFA 4/e.
+
+parseie.exe
+Parse IE index.dat files
+
+pie.exe
+Stripped down version of parseie.exe; intended to provide only IE index.dat
+header info.  The purpose of this is that if you find that a System-level account
+(LocalService, etc.) has an IE index.dat file, you can check quickly to see if
+it's populated with web history, which may indicate malicious activity.
+
+pref.exe
+Parses Prefetch files, via several options
+
+p2x5124.dll
+DLL required by all .exe files in this folder
+
+rawie.exe
+Parses IE index.dat files on a binary basis; bypasses checking of the
+hash section within the file header.  This tool will extract "deleted"
+records, as well as partial ones.
+
+recbin.exe
+Parses Recycle Bin files from both XP/2003 (INFO2) and Vista+ systems.
+
+regslack.exe
+Parses a Registry hive file, looking for deleted keys/values; will also
+parse out unallocated space.
+
+regtime.exe
+Parses hive file key LastWrite times to output into TLN format
+
+tln.exe
+Stand-alone GUI tool for adding individual events to the TLN events file.
+
+usnj.exe
+Parse NTFS USN change journal, includes TLN output option
+
+wevtx.bat 
+Uses LogParser and evtxparse to parse Vista+ *.evtx files into TLN format.
+As LogParser relies on the API of the system it's installed on, this must
+be run from Win7.
+
+------------------------------------------------------------
+The following are tools that are included in the Source folder but do not have
+corresponding .exe files in the EXE folder:
+
+evtrpt.pl
+Parses XP/2003 *.evt files, provides statistics on available records
+(i.e., source/ID pairs, number of records, date range of all records, etc.)
+
+fb.pl
+Parses Facebook chat records extracted by EnCase
+
+ff.pl
+Parses Firefox 3 places.sqlite file
+
+ff_signons.pl
+
+
+lfle.pl
+Carves XP/2003 Event Log/.evt records (not files...individual records) 
+
+mft.pl
+MFT parser
+
+parsei30.pl
+Parse directory index (seen in FTK Imager as $I30) files 
+
+rfc.pl
+Parse RecentFileCache.bcf files 
+
+rlo.pl
+Original test code to locate Registry key and value names that include the
+Right-Left Override (RLO) Unicode control character; this functionality is 
+included in the RegRipper rlo.pl plugin
+
+*Note: several of the source tools (those without corresponding .exe files)
+are provided for informational/educational purposes
