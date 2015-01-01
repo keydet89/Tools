@@ -64,7 +64,7 @@ while ($offset < $size) {
 				print gmtime($u{timestamp}).",".$u{name}.",".$u{reason}."\n";
 			}
 			elsif ($config{tln}) {
-				printf $u{timestamp}."|USNJ|".$config{server}."||filesystem|".$u{name}.": ".$u{reason}."  FileRef: ".$u{fileref}."  ParentRef: ".$u{parentref}."\n";
+				printf $u{timestamp}."|USNJ|".$config{server}."||".$u{name}.": ".$u{reason}."  FileRef: ".$u{fileref}."  ParentRef: ".$u{parentref}."\n";
 			}
 			else {
 				print "Name: ".$u{name}."  FileRef: ".$u{fileref}."  ParentRef: ".$u{parentref}."\n";

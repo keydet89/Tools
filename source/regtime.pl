@@ -47,7 +47,6 @@ die $config{reg}." not found.\n" unless (-e $config{reg});
 
 $config{user} = "" unless $config{user};
 
-
 my %regkeys;
 my $reg = Parse::Win32Registry->new($config{reg});
 my $root_key = $reg->get_root_key;
@@ -67,6 +66,14 @@ sub traverse {
   my $name = $key->as_string();
   $name =~ s/\$\$\$PROTO\.HIV//;
   $name = (split(/\[/,$name))[0];
+
+# If the key name beings with "CsiTool-CreateHive" or "CMI-CreateHive", remove that
+# part of the name 
+  if ($name =~ m/^CsiTool-CreateHive/ || $name =~ m/^CMI-CreateHive/) {
+  	my @n = split(/\\/,$name);
+  	$name = join('\\',@n[1..(scalar(@n) - 1)]);
+  }
+  
   push(@{$regkeys{$ts}},$name);  
 	foreach my $subkey ($key->get_list_of_subkeys()) {
 		traverse($subkey);
