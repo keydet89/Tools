@@ -266,6 +266,8 @@ sub parseLNK {
 # Command Line string		
 	if ($hdr{flags} & 0x20) {
 		my ($cli,$tot) = getUnicodeString($offset);
+#remove leading spaces		
+		$cli =~ s/^\s+//g;
 		$lnk{commandline} = $cli;
 #    $lnk{basename} .= $cli;
 		$offset += $tot;

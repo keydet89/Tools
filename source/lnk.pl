@@ -21,7 +21,8 @@ my %vals = (0 => "mtime",
             7 => "birth_obj_id_node",
             8 => "shitemidlist",
             9 => "vol_sn",
-            10 => "vol_type");
+            10 => "vol_type",
+            11 => "commandline");
 
 if (-d $file) {
 	$file = $file."\\" unless ($file =~ m/\\$/);
@@ -58,5 +59,6 @@ foreach my $f (@files) {
 			}
 		}
 	}
+
 }
 
