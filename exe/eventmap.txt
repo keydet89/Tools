@@ -3,6 +3,15 @@
 # ref: http://support.microsoft.com/kb/2157973
 #      http://support.microsoft.com/kb/977519
 Microsoft-Windows-Security-Auditing/4625:[Failed Login]
+
+# https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/event.aspx?eventID=5140
+Microsoft-Windows-Security-Auditing/5140:[Network share object accessed]
+Microsoft-Windows-Security-Auditing/5142:[Network share object added]
+Microsoft-Windows-Security-Auditing/5143:[Network share object modified]
+Microsoft-Windows-Security-Auditing/5144:[Network share object deleted]
+Microsoft-Windows-Security-Auditing/5168:[SPN check for SMB/SMB2 failed]
+
+
 #
 # ref: http://technet.microsoft.com/en-us/library/ee891289(v=ws.10).aspx
 # ref: http://technet.microsoft.com/en-us/library/ee891242(v=ws.10)
@@ -21,11 +30,36 @@ Microsoft-Windows-Winlogon/7002:[Logoff]
 Winlogon/4101:[License Val.]
 
 Microsoft-Windows-Security-Auditing/4624:[Logon]
+ 
+# http://technet.microsoft.com/en-us/library/cc734130%28v=ws.10%29.aspx  
+# http://blogs.msdn.com/b/patricka/archive/2010/04/27/what-is-interactive-services-detection-and-why-is-it-blinking-at-me.aspx
+# http://blogs.msdn.com/b/patricka/archive/2011/03/14/troubleshooting-interactive-services-detection.aspx
+Interactive Services detection/1000:[ALERT]
+
+# http://technet.microsoft.com/en-us/library/cc756342%28v=ws.10%29.aspx
+# Service timed out waiting for resources
+Service Control Manager/7009:[ALERT]
+# Service installed
+Service Control Manager/7045:[ALERT]
+
+# http://technet.microsoft.com/en-us/library/cc756339%28v=ws.10%29.aspx
+Service Control Manager/7030:[ALERT]
+
+# Seen associated with some Poweliks variants
+# http://www.microsoft.com/technet/support/ee/transform.aspx?ProdName=Windows+Operating+System&ProdVer=5.2&EvtID=10010&EvtSrc=DCOM&LCID=1033
+DCOM/10010:[ALERT]
 
 # http://technet.microsoft.com/en-us/library/dd315533(v=ws.10).aspx
 Microsoft-Windows-TaskScheduler/102:[Job Success]
 Microsoft-Windows-TaskScheduler/106:[Task Reg]
+# https://technet.microsoft.com/en-us/library/dd363721%28v=ws.10%29.aspx
+Microsoft-Windows-TaskScheduler/110:[Task Run]
+
 Microsoft-Windows-TaskScheduler/201:[Action Success]
+
+Microsoft-Windows-TaskScheduler/140:[Task Mod]
+Microsoft-Windows-TaskScheduler/141:[Task Del]
+
 
 # Malware Detection
 Microsoft-Windows-DNS-Client/1014:[Name Resolution Timeout]
@@ -36,13 +70,11 @@ Symantec AntiVirus/51:[MalDetect]
 Symantec Network Protection/400:[MalDetect]
 McLogEvent/257:[MalDetect]
 
-#Lateral Movement
-Microsoft-Windows-TaskScheduler/106:[Task Reg]
 
-#
 # Source: Microsoft-Windows-TerminalServices-RemoteConnectionManager
 # ref: http://technet.microsoft.com/en-us/library/cc775119(v=ws.10)
 Microsoft-Windows-TerminalServices-RemoteConnectionManager/1146:[Session Start]
+# https://technet.microsoft.com/en-us/library/ee891219%28v=ws.10%29.aspx
 Microsoft-Windows-TerminalServices-RemoteConnectionManager/1147:[Logon]
 Microsoft-Windows-TerminalServices-RemoteConnectionManager/1149:[Logon]
 
