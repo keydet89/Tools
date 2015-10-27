@@ -68,6 +68,11 @@ Microsoft-Windows-TaskScheduler/201:[Action Success]
 Microsoft-Windows-TaskScheduler/140:[Task Mod]
 Microsoft-Windows-TaskScheduler/141:[Task Del]
 
+# Added based on threat actor activity
+# https://technet.microsoft.com/en-us/library/cc774959(v=ws.10).aspx
+Microsoft-Windows-TaskScheduler/706:[Task Update FAIL]
+# https://technet.microsoft.com/en-us/library/cc775037(v=ws.10).aspx
+Microsoft-Windows-TaskScheduler/329:[Task Timeout]
 
 # Malware Detection
 Microsoft-Windows-DNS-Client/1014:[Name Resolution Timeout]
