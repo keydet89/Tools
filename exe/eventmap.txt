@@ -12,6 +12,12 @@ Microsoft-Windows-Security-Auditing/5143:[Network share object modified]
 Microsoft-Windows-Security-Auditing/5144:[Network share object deleted]
 Microsoft-Windows-Security-Auditing/5168:[SPN check for SMB/SMB2 failed]
 
+Microsoft-Windows-Security-Auditing/4674:[Priv_Obj_Attempt]
+
+#
+# 
+# https://www.microsoft.com/technet/support/ee/transform.aspx?ProdName=Windows%20Operating%20System&ProdVer=5.2&EvtID=63&EvtSrc=WinMgmt&LCID=1033
+WinMgmt/63:[ALERT]
 
 #
 # ref: http://technet.microsoft.com/en-us/library/ee891289(v=ws.10).aspx
@@ -68,6 +74,15 @@ Microsoft-Windows-TaskScheduler/201:[Action Success]
 Microsoft-Windows-TaskScheduler/140:[Task Mod]
 Microsoft-Windows-TaskScheduler/141:[Task Del]
 
+# TaskScheduler backward compatibility
+# Saw a bad guy create a SchedTask for a long-running process (RAT), then deleted the task after it was running.
+# Almost exactly 72 hrs later, the TaskScheduler balked and generated a 7xx level event record, stating that it 
+# couldn't update the backward compatible .job file
+#
+# https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/dd363614(v%3dws.10)
+# https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/dd315728(v%3dws.10)
+Microsoft-Windows-TaskScheduler/709:[Task BKWD]
+
 # Added based on threat actor activity
 # https://technet.microsoft.com/en-us/library/cc774959(v=ws.10).aspx
 Microsoft-Windows-TaskScheduler/706:[Task Update FAIL]
@@ -89,6 +104,13 @@ Microsoft-Windows-TerminalServices-RemoteConnectionManager/1146:[Session Start]
 # https://technet.microsoft.com/en-us/library/ee891219%28v=ws.10%29.aspx
 Microsoft-Windows-TerminalServices-RemoteConnectionManager/1147:[Logon]
 Microsoft-Windows-TerminalServices-RemoteConnectionManager/1149:[Logon]
+
+
+# https://technet.microsoft.com/en-us/library/cc734254(v=ws.10).aspx
+# Note: this event has been observed when ransomware attempts to delete 
+#   VSCs, but infected user profile does not have necessary privileges.
+# Record Data contains command, encoded as hex (conver to ASCII)
+VSS/13:[VSS Fail]
 
 VSS/8224:[VSS Shutdown]
 VSS/8225:[VSS Shutdown via SCM]

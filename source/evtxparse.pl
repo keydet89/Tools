@@ -58,7 +58,7 @@ sub processLogLine {
 	
 	if (scalar(@data) >= 1 && $data[0] =~ m/^\d+,\d+/) {
 		$line = join('|',@data);
-		my ($num,$date,$id,$source,$strings) = split(/,/,$line,5);
+		my ($num,$date,$id,$source,$server,$sid,$strings) = split(/,/,$line,7);
 		my $epoch = getEpoch($date);		
 		$strings =~ s/\|/,/g;
 		my $descr;
@@ -68,7 +68,7 @@ sub processLogLine {
 		else {
 			$descr = $source."/".$id.";".$strings;
 		}
-		print $epoch."|EVTX|Server||".$descr."\n";
+		print $epoch."|EVTX|".$server."||".$descr."\n";
 	}
 }
 
