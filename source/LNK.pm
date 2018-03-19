@@ -275,6 +275,7 @@ sub parseLNK {
 # Icon file		
 	if ($hdr{flags} & 0x40) {
 		my ($ico,$tot) = getUnicodeString($offset);
+		$lnk{iconfilename} = $ico;
 #			print "    Icon Filename : ".$ico."\n";
 		$offset += $tot;
 	}

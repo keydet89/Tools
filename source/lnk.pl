@@ -2,7 +2,10 @@
 #-----------------------------------------------------------
 # This is a simple script to demonstrate the use of the LNK.pm module.
 #
-# copyright 2011-2013 Quantum Research Analytics, LLC
+# History:
+#   20180319 - updated to include displaying icon filename path
+#
+# copyright 2011-2018 Quantum Research Analytics, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------
 use strict;
@@ -22,7 +25,8 @@ my %vals = (0 => "mtime",
             8 => "shitemidlist",
             9 => "vol_sn",
             10 => "vol_type",
-            11 => "commandline");
+            11 => "commandline",
+            12 => "iconfilename");
 
 if (-d $file) {
 	$file = $file."\\" unless ($file =~ m/\\$/);
@@ -32,7 +36,7 @@ if (-d $file) {
 	
 	foreach (@d) {
 		next if ($_ =~ m/^\./);
-		next unless ($_ =~ m/\.lnk$/);
+#		next unless ($_ =~ m/\.lnk$/);
 		push(@files,$file.$_);
 	}
 
@@ -42,7 +46,6 @@ elsif (-f $file) {
 	push(@files,$file);
 }
 else {}
-
 
 foreach my $f (@files) {
 	my $lnk = LNK->new();
@@ -59,6 +62,6 @@ foreach my $f (@files) {
 			}
 		}
 	}
-
+	print "\n";
 }
 
