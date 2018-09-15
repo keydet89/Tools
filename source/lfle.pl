@@ -13,18 +13,29 @@
 #
 # Output to STDOUT in 5-field TLN format (pipe delimited)
 #
-# copyright 2014 QAR, LLC
+# copyright 2018 QAR, LLC
 # author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------
 use strict;
+use Getopt::Long;
+my $VERSION = "20180915";
+my %config = ();
+Getopt::Long::Configure("prefix_pattern=(-|\/)");
+GetOptions(\%config, qw(file|f=s debug|d stats|s help|?|h));
 
-my $file = shift;
-die "You must enter a filename\.\n" if ($file eq "");
+if ($config{help} || ! %config || ! $config{file}) {
+	_syntax();
+	exit 1;
+}
+
+my $file = $config{file};
 die $file." not found\.\n" unless (-e $file);
 
 my $size = (stat($file))[7];
 my $data;
 my $ofs;
+my $l;
+my %stats = ();
 
 my %types = (0x0001 => "Error",
              	0x0010 => "Failure",
@@ -38,38 +49,57 @@ while ($ofs < $size) {
 	seek(FH,$ofs,0);
 	read(FH,$data,4);
 	if (unpack("V",$data) == 0x654c664c) {
-#	printf "Magic number located at offset 0x%x\n",$ofs;
 		seek(FH,$ofs - 4,0);
 		read(FH,$data,4);
-		my $l = unpack("V",$data);
-		if ($l < 0x800) {
-# If the record size is larger than 2K, we're going to skip it. Most records
+		$l = unpack("V",$data);
+		
+		printf "Magic number located at offset 0x%x with length of ".$l." bytes\n",$ofs if ($config{debug});
+		
+		if ($l < 0x30) {
+# Record length less than 0x30, skip			
+			(exists($stats{small})) ? ($stats{small} += 1) : ($stats{small} = 1);
+			$ofs += 4;
+		}
+		elsif ($l == 0x30) {
+			(exists($stats{small})) ? ($stats{small} += 1) : ($stats{small} = 1);
+# Dump the record to hex
+			if ($config{debug}) {
+				seek(FH,$ofs - 4,0);
+				read(FH,$data,$l);
+				probe($data);
+			}			
+			$ofs += ($l - 4);
+		}
+		elsif ($l < 0x1000) {
+# If the record size is larger than 4K, we're going to skip it. Most records
 # aren't this big, and this will help keep us from reading off the end of the
 # file when the value read as the record size is too large	
 			seek(FH,$ofs - 4,0);
 			read(FH,$data,$l);
 			my $f = unpack("V",substr($data,$l - 4,4));
-#			printf "Possible record located at offset 0x%08x; Length = 0x%x, Final Length = 0x%x\n",$ofs - 4,$l,$f;
+			if ($config{debug}) {
+				printf "Possible record located at offset 0x%08x; Length = 0x%x, Final Length = 0x%x\n",$ofs - 4,$l,$f;
+			}
 			if ($l == $f) {
-				if ($l == 0x30) {
-# skip over header records					
-#				print "\t**HDR Record\n";
-					$ofs += 0x30;
+				(exists($stats{count})) ? ($stats{count} += 1) : ($stats{count} = 1);
+# We have a correctly formed record
+				my %r = parseRec($data);
+				my $desc = "[$r{rec_num}] - ".$r{source}."/".$r{evt_id}.";".$types{$r{evt_type}}.";".$r{strings};
+				
+				print $r{time_gen}."|EVT|".$r{computername}."|".$r{sid}."|".$desc."\n";
+				
+				$ofs += $l;
+			}
+			else {
+				(exists($stats{malformed})) ? ($stats{malformed} += 1) : ($stats{malformed} = 1);
+				if ($config{debug}) {
+					probe($data);
 				}
-				elsif ($l == 0x28) {
-# also skip EOF records					
-#				print "\t**EOF Record\n";	
-					$ofs += 0x28;
-				}
-				else {
-					my %r = parseRec($data);
-					my $desc = $r{source}."/".$r{evt_id}.";".$types{$r{evt_type}}.";".$r{strings};
-					print $r{time_gen}."|EVT|".$r{computername}."|".$r{sid}."|".$desc."\n";
-					$ofs += $l;
-				}
+				$ofs += $l;
 			}
 		}	
 		else {
+			(exists($stats{large})) ? ($stats{large} += 1) : ($stats{large} = 1);
 			$ofs += 4;
 		}
 	}
@@ -78,6 +108,14 @@ while ($ofs < $size) {
 	}
 }
 close(FH);
+
+if ($config{stats}) {
+	print "\n";
+	print "Small records skipped    : ".$stats{small}."\n";
+	print "Large records skipped    : ".$stats{large}."\n";
+	print "Malformed records skipped: ".$stats{malformed}."\n";
+	print "Records retrieved        : ".$stats{count}."\n";
+}
 
 #---------------------------------------------------------------------
 # parseRec()
@@ -224,4 +262,23 @@ sub printData {
 		$display[$cnt] = sprintf("0x%08X  %-50s %s",$cnt,$lhs,$rhs);
 	}
 	return @display;
+}
+
+
+sub _syntax {
+print<< "EOT";
+lfle [options] v.$VERSION
+lfle parses content for EVT records; sends to STDOUT
+
+  -f file........file to be parsed
+  -d ............debug mode (default: off)
+  -s ............maintain/print statistics                                  
+  -h ............Help (print this information)
+  
+Ex: 
+#Send recovered records to STDOUT (can redirect to a file)
+C:\\>lfle -f mem\.raw 
+
+copyright 2018 Quantum Analytics Research, LLC
+EOT
 }
