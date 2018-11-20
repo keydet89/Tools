@@ -1,17 +1,21 @@
 #! c:\perl\bin\perl.exe
 #------------------------------------------------------
 # recbin.pl
-# Perl script to parse the contents of the INFO2 file from
+# Perl script to parse the contents of the INFO2/$I files from
 #   the Recycle Bin; can output .tln format
+#
+# Ref:
+#  https://df-stream.com/2016/04/fun-with-recycle-bin-i-files-windows-10/
 #
 # usage: see usage()
 #
 # Change history:
+#   20181120 - updated
 #   20120509 - Added support for detecting and parsing Vista/Win7 
 #              Recycle Bin $I..... files
 #		20090608 - TLN output to STDOUT, rather than file
 #
-# copyright 2012 Quantum Analytics Research, LLC
+# copyright 2018 Quantum Analytics Research, LLC
 # Author: H. Carvey keydet89@yahoo.com
 #------------------------------------------------------
 use strict;
@@ -42,8 +46,16 @@ if (uc($name) eq "INFO2") {
 	parseINFO2($file);
 }
 elsif (uc($name) =~ m/^\$I/) {
-#	print "Win7 Recycle Bin file.\n";
-	parseWin7($file);
+	my $ver = checkHeader($file);
+	if ($ver == 1) {
+		parseWin7($file);
+	} 
+	elsif ($ver == 2) {
+		parseWin10($file);
+	}
+	else {
+		print "Unknown version for ".$file.": ".$ver."\n";
+	}
 }
 else { 
 # Unknown	
@@ -112,6 +124,18 @@ sub parseRecord {
 	return %record;
 }
 
+sub checkHeader {
+	my $file = shift;
+	my $data;
+	open(FH,"<",$file);
+	binmode(FH);
+	seek(FH,0,0);
+	read(FH,$data,8);
+	my ($t0,$t1) = unpack("VV",$data);
+	close(FH);
+	return $t0;
+}
+
 #---------------------------------------------------------
 # parseWin7()
 # Parses a Vista/Win7 Recycle Bin $I.... file
@@ -126,22 +150,55 @@ sub parseWin7 {
 	read(FH,$data,$size);
 	close(FH);
 	
-	my $sz;
 	my @szs = unpack("VV",substr($data,0x08,8));
-	$sz = $szs[0] if ($szs[1] == 0);
+	my $sz = c64($szs[0],$szs[1]);
 	
 	my $t = getTime(unpack"VV",substr($data,0x10,8));
 	my $name = substr($data,0x18,($size - 0x18));
 	$name =~ s/\00//g;
 
 	if ($config{csv}) {
-		print $name.",".$t."\n";
+		print $name.", size: ".$sz.",".$t."\n";
 	}
 	elsif ($config{tln}) {
 		print $t."|RECBIN|".$config{system}."|".$config{user}."|DEL - [".$sz."] ".$name."\n";
 	}
 	else {
-		print $name." deleted on ".gmtime($t)." Z\n";
+		print $name." [".$sz." bytes] deleted on ".gmtime($t)." Z\n";
+	}
+}
+
+#---------------------------------------------------------
+# parseWin10()
+# Parses a Win10 Recycle Bin $I.... file
+#---------------------------------------------------------
+sub parseWin10 {
+	my $file = shift;
+	my $size = (stat($file))[7];
+	my $data;
+	open(FH,"<",$file);
+	binmode(FH);
+	seek(FH,0,0);
+	read(FH,$data,$size);
+	close(FH);
+	
+	my @szs = unpack("VV",substr($data,0x08,8));
+	my $sz = c64($szs[0],$szs[1]);
+	
+	my $t = getTime(unpack"VV",substr($data,0x10,8));
+	
+	my $name_sz = unpack("V",substr($data,0x18,4));
+	my $name = substr($data,0x1c,$name_sz * 2);
+	$name =~ s/\00//g;
+
+	if ($config{csv}) {
+		print $name.", size: ".$sz.",".$t."\n";
+	}
+	elsif ($config{tln}) {
+		print $t."|RECBIN|".$config{system}."|".$config{user}."|DEL - [".$sz."] ".$name."\n";
+	}
+	else {
+		print $name." [".$sz." bytes] deleted on ".gmtime($t)." Z\n";
 	}
 }
 
@@ -168,6 +225,21 @@ sub getTime {
 }
 
 #---------------------------------------------------------
+#
+#---------------------------------------------------------
+sub c64 {
+	my $num1 = shift;
+	my $num2 = shift;
+	if ($num2 != 0) {
+		$num2 = ($num2 * 4294967296);
+		return $num1 + $num2;
+	}
+	else {
+		return $num1;
+	}
+}
+
+#---------------------------------------------------------
 # usage()
 #---------------------------------------------------------
 sub usage {
@@ -176,7 +248,7 @@ Recbin [options]
 Parse Windows Recycle Bin INFO2 & \$Ixxxxx files in binary mode, translating 
 the information listed; sends data to STDOUT, can also generate timeline data
 
-  -f file..................path to XP INFO2 file or Vista/Win7 \$I file
+  -f file..................path to XP INFO2 file or Win7/10 \$I file
   -c ......................output in csv format to STDOUT
   -t ......................timeline format output to STDOUT
   -s systemname............add system name to appropriate field in tln file
@@ -186,6 +258,6 @@ the information listed; sends data to STDOUT, can also generate timeline data
 Ex: C:\\>recbin -f INFO2 
     C:\\>recbin -f d:\\cases\\\$IJ36543\.exe -t
   
-copyright 2012 Quantum Analytics Research, LLC
+copyright 2018 Quantum Analytics Research, LLC
 EOT
 }
