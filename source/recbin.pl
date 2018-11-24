@@ -10,6 +10,7 @@
 # usage: see usage()
 #
 # Change history:
+#   20181124 - added size output for INFO2
 #   20181120 - updated
 #   20120509 - Added support for detecting and parsing Vista/Win7 
 #              Recycle Bin $I..... files
@@ -85,14 +86,14 @@ sub parseINFO2 {
 		next if ($rec{num} == 0 && $rec{drive} == 0);
 		my $t = gmtime($rec{del_time});
 		if ($config{csv}) {
-			print $rec{num}.",".$t.",".$rec{u_name}."\n";
+			print $rec{num}.",".$t.", ".$rec{u_name}." size: ".$rec{size}." bytes\n";
 		}
 		elsif ($config{tln}) {
-			my $str = $rec{del_time}."|RECBIN|".$config{system}."|".$config{user}."|DELETED - ".$rec{u_name};
+			my $str = $rec{del_time}."|RECBIN|".$config{system}."|".$config{user}."|DELETED - ".$rec{u_name}." [".$rec{size}."] bytes";
 			print $str."\n";
 		}
 		else {
-			printf "%-4d %-28s %-48s\n",$rec{num},$t,$rec{u_name};
+			printf "%-4d %-28s %-48s  size: ".$rec{size}." bytes\n",$rec{num},$t,$rec{u_name};
 		}
 	
 		$ofs += $hdr[3];
