@@ -4,12 +4,13 @@
 #           LastWrites and names in TLN format
 #
 # Change History
+#   20200414 - updated to remove "ROOT" from the beginning of the path
 #   20120515 - updated with Parse::Win32Registry v1.0 pragmas, so that the
 #              tool can be compiled with Perl2Exe
 #   20110509 - updated to TLN output
 #
 #
-# copyright 2012 Quantum Analytics Research, LLC
+# copyright 2020 Quantum Analytics Research, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #------------------------------------------------------------
 use strict;
@@ -29,7 +30,7 @@ use Getopt::Long;
 #perl2exe_include "utf8.pm";
 #perl2exe_include "unicore/Heavy.pl";
 #perl2exe_include "unicore/To/Upper.pl";
-my $VERSION = "1\.0\.20120515";
+my $VERSION = "1\.0\.202010414";
 
 my %config = ();
 Getopt::Long::Configure("prefix_pattern=(-|\/)");
@@ -67,9 +68,9 @@ sub traverse {
   $name =~ s/\$\$\$PROTO\.HIV//;
   $name = (split(/\[/,$name))[0];
 
-# If the key name beings with "CsiTool-CreateHive" or "CMI-CreateHive", remove that
+# If the key name beings with "CsiTool-CreateHive" or "CMI-CreateHive" or "ROOT", remove that
 # part of the name 
-  if ($name =~ m/^CsiTool-CreateHive/ || $name =~ m/^CMI-CreateHive/) {
+  if ($name =~ m/^CsiTool-CreateHive/ || $name =~ m/^CMI-CreateHive/ || $name =~ m/^ROOT/) {
   	my @n = split(/\\/,$name);
   	$name = join('\\',@n[1..(scalar(@n) - 1)]);
   }

@@ -5,12 +5,13 @@
 #  file.
 # 
 # Change History: 
+#   20200426 - modified date/time output format to be IAW RFC 3339 profile for ISO 8601
 #   20130417 - added option to list events oldest first;
 #   20110523 - modified time module to Time::Local
 #   20110511 - added csv output option
 #   20090610 - added command line options, date range parsing
 #
-# copyright 2013 Quantum Analytics Research, LLC 
+# copyright 2020 Quantum Analytics Research, LLC 
 # Author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------
 use strict;
@@ -83,7 +84,7 @@ if ($config{csv}) {
 			foreach my $n (@events) {
 				my ($type,$sys,$user,$desc) = split(/\|/,$n,4);
 				eval {
-					print $csvtime.",".$type.",".$sys.",".$user.",".$desc."\n";
+					print $csvtime."Z,".$type.",".$sys.",".$user.",".$desc."\n";
 				};
 			}
 		}
@@ -96,7 +97,7 @@ if ($config{csv}) {
 			foreach my $n (@events) {
 				my ($type,$sys,$user,$desc) = split(/\|/,$n,4);
 				eval {
-					print $csvtime.",".$type.",".$sys.",".$user.",".$desc."\n";
+					print $csvtime."Z,".$type.",".$sys.",".$user.",".$desc."\n";
 				};
 			}
 		}
@@ -105,7 +106,7 @@ if ($config{csv}) {
 else {
 	if ($config{old}) {
 		foreach my $i (sort {$a <=> $b} keys %tl) {
-			print gmtime($i)." Z\n";
+			print getDateFromEpoch($i)."Z\n";
 			my @events = uniq(@{$tl{$i}});
 			foreach my $n (@events) {
 				my ($type,$sys,$user,$desc) = split(/\|/,$n,4);
@@ -118,7 +119,7 @@ else {
 	}
 	else {
 		foreach my $i (reverse sort {$a <=> $b} keys %tl) {
-			print gmtime($i)." Z\n";
+			print getDateFromEpoch($i)."Z\n";
 			my @events = uniq(@{$tl{$i}});
 			foreach my $n (@events) {
 				my ($type,$sys,$user,$desc) = split(/\|/,$n,4);
@@ -133,7 +134,6 @@ else {
 
 sub getEpoch {
 	my ($yy,$mm,$dd,$hr,$min,$sec) = @_;
-	
 	my $epoch = timegm($sec,$min,$hr,$dd,$mm - 1,$yy);
 	return $epoch;
 }
@@ -141,14 +141,9 @@ sub getEpoch {
 # ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time)
 sub getDateFromEpoch {
 	my $epoch = shift;
-	my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime($epoch);
-	$mon++;
-	$mon = "0".$mon if ($mon < 10);
-	$hour = "0".$hour if ($hour < 10);
-	$min = "0".$min if ($min < 10);
-	$sec = "0".$sec if ($sec < 10);
-	my $str = ($year + 1900)."-".$mon."-".$mday." ".$hour.":".$min.":".$sec;
-	return $str;
+	my ($sec,$min,$hour,$mday,$mon,$year) = gmtime($epoch);
+	my $fmt = sprintf("%04d-%02d-%02d %02d:%02d:%02d",(1900 + $year),($mon + 1),$mday,$hour,$min,$sec);
+	return $fmt."Z";
 }
 
 # remove duplicate lines from an array, return an array
@@ -164,7 +159,7 @@ Parse contents event file to produce a timeline; output goes to STDOUT
   -f file........event file to be parsed; must be 5-field TLN
                  format
   -c ............CSV output format (for opening in Excel), time in 
-                 YYYYMMDDhhmmss format
+                 YYYY-MM-DD hh:mm:ss format (RFC 3339 profile for ISO 8601)
   -o ............sort showing oldest events first               
   -r range ......range of dates, MM/DD/YYYY-MM/DD/YYYY format; time range of
                  00:00:00 is automatically added to the first date, and 
@@ -177,6 +172,6 @@ Ex: C:\\>parse -f events\.txt -o > tln\.txt
 
 **All times printed as GMT/UTC
 
-copyright 2013 Quantum Analytics Research, LLC
+copyright 2020 Quantum Analytics Research, LLC
 EOT
 }
