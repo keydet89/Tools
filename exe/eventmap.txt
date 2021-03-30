@@ -145,6 +145,13 @@ DriverFrameworks-UserMode/10000:[Driver Installed]
 WLAN-AutoConfig/8000:[WAP Connection]
 WLAN-AutoConfig/8001:[WAP Connection]
 WLAN-AutoConfig/8002:[WAP Connect Fail]
+
+#ref https://www.linkedin.com/pulse/investigating-wireless-hotspoting-activity-windows-marasinghe/
+WLAN-AutoConfig/8005:[WLAN AutoConfig service has begun starting the hosted network]
+WLAN-AutoConfig/8006:[WLAN AutoConfig service has finished starting the hosted network]
+WLAN-AutoConfig/8008:[WLAN AutoConfig has begun to stop the hosted network]
+WLAN-AutoConfig/20019:[WLAN client has associated with the hosted network]
+
 NetworkProfile/1000:[Connected to Network]
 NetworkProfile/1001:[Disconnected from Network]
 VHDMP/1:[VHD Mount]
